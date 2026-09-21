@@ -36,12 +36,22 @@ We verified against the current public GraphQL schema (2026-02): `pinItem` / `un
 
 ## Install / 安装 / インストール
 
+One line (macOS & Linux):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Keng0nion/github-settings/main/install.sh | bash
+```
+
+Or manually:
+
 ```bash
 git clone https://github.com/Keng0nion/github-settings.git
 mkdir -p ~/.zcode/skills ~/.agents/skills
 cp -r github-settings ~/.zcode/skills/
 cp -r github-settings ~/.agents/skills/
 ```
+
+Releases / 发行版: packaged skill archives are attached to each [GitHub release](https://github.com/Keng0nion/github-settings/releases) — download the zip and drop it into `~/.zcode/skills/`.
 
 Requires the GitHub CLI (`gh`) with `repo` scope (`gh auth login`). The pin write flow additionally needs a browser-automation skill (e.g. [agent-browser](https://github.com/vercel-labs/agent-browser)) with a GitHub-signed-in browser session.
 
@@ -59,6 +69,23 @@ Once installed, just ask your agent naturally:
 - “开启 secret scanning” / "Enable secret scanning" / 「secret scanning を有効にして」
 
 The agent will follow `SKILL.md`: read pins via GraphQL, change pins through the web UI, and manage everything else with `gh` CLI — always verifying changes with a read-back.
+
+---
+
+## Maintainer notes / 维护者笔记 / メンテナンス
+
+After editing `SKILL.md` / `README.md`, sync them back with the GitHub Contents API (keeps the commit history clean, no local git needed):
+
+```bash
+gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
+  -f message="Update SKILL.md" \
+  -f content="$(base64 < SKILL.md | tr -d '\n')" \
+  -f sha="$(gh api repos/Keng0nion/github-settings/contents/SKILL.md --jq '.sha')"
+```
+
+Cut a release: `gh release create vX.Y.Z --repo Keng0nion/github-settings --title vX.Y.Z --generate-notes`, then attach the packaged zip with `gh release upload`.
+
+- 编辑 `SKILL.md` / `README.md` 后用 GitHub Contents API 同步回仓库（保持提交历史干净，无需本地 git）。发版：`gh release create` 打 tag + notes，再 `gh release upload` 附打包的 zip。
 
 ---
 
