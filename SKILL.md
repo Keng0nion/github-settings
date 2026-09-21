@@ -52,25 +52,56 @@ What can be pinned, and how many slots remain (viewer only):
 gh api graphql -f query='query { viewer { pinnableItems(first: 20, types: [REPOSITORY]) { nodes { ... on Repository { id nameWithOwner } } } pinnedItemsRemaining viewerCanChangePinnedItems } }'
 ```
 
+Pins can also be gists or issues — the `types` argument accepts any
+`PinnableItemType` (`REPOSITORY`, `GIST`, `ISSUE`, `PROJECT`, `PULL_REQUEST`,
+`USER`, `ORGANIZATION`, `TEAM`), and the pinned-item shape must match:
+
+```bash
+gh api graphql -f query='query { viewer { pinnedItems(first: 6) { nodes { ... on Repository { id nameWithOwner } ... on Gist { id name } ... on Issue { id title } } } } }'
+```
+
 ### Write (web UI only)
 
 No official API exists. Automate the web UI with a browser-automation skill
-(e.g. `agent-browser`), using a browser session that is signed in to GitHub:
+(e.g. `agent-browser`).
+
+**First check the session is signed in**: open `https://github.com/{owner}`
+and snapshot — a "Sign in" link means the browser session is logged out. Open
+the login page in a visible window (`agent-browser open --headed
+https://github.com/login`) and have the user sign in once — the session
+persists it, so later runs need no login. Agents must never enter
+credentials themselves.
+
+Pin / unpin / reorder flow (user and org profiles alike):
 
 1. Open `https://github.com/{owner}` (user profile) or
    `https://github.com/orgs/{org}` (org profile).
 2. Find and click **"Customize your pins"** — the pencil button at the top of
-   the pinned-items section (hidden until you hover; if the profile has no
-   pins, the section shows a "Customize your pins" link instead).
-3. In the dialog, type the repository name into the search box, then click
-   the checkbox next to each repo to pin it (deselect to unpin). Max 6 items.
-4. Click **Save changes**.
-5. Verify by re-running the GraphQL read query above — that, not the browser
-   state, is the source of truth.
+   the pinned-items section (hover to reveal it; if the profile has no pins,
+   it is a plain link).
+3. The dialog ("Edit pinned items") lists every pinnable item as a checkbox,
+   max 6. Use the "Filter repositories" search box to find repos fast. Check
+   to pin, uncheck to unpin. **The saved order equals the order you check
+   the boxes in** — to reorder, uncheck everything first, then check in the
+   desired order.
+4. Click **Save pins**.
 
-If no signed-in browser session is available, say so and give the user the
-profile URL to do it manually. Never claim a pin was changed without the
-GraphQL read confirming it.
+Known pitfalls (verified 2026-02, agent-browser 0.33.0):
+
+- The dialog may show **"Something went wrong"** on first open — click
+  Close and open it again; it loads fine the second time.
+- Element refs go stale after every click — **re-snapshot before each
+  click**.
+- `agent-browser sessions` does not exist in 0.33.0; drive the loop with
+  `snapshot` and `close` only.
+
+### Verify
+
+Confirm every change with the GraphQL read query above — that, not the
+browser state, is the source of truth. Never claim a pin was changed without
+the read-back confirming it. Optionally screenshot the profile page for the
+user; wait for the pinned section to render before capturing, or the
+screenshot shows the loading state.
 
 ## 2. Repository settings (`gh repo edit`)
 
