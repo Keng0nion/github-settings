@@ -1,32 +1,20 @@
+🌐 中文 · [English](README.en.md) · [日本語](README.ja.md)
+
 # github-settings
 
-A [skill](https://agentskills.io) that lets AI agents read and change GitHub repository & profile settings directly — including **pinning repositories to your profile**, which no official API supports.
-
-| 中文 | English | 日本語 |
-|---|---|---|
-| 一个让 AI 直接完成 GitHub 仓库与个人资料设置的 skill —— 包括把仓库 **pin 到个人主页**（官方 API 至今没有这个能力）。 | A skill that lets AI agents read and change GitHub repository & profile settings directly — including **pinning repositories to your profile**, which no official API supports. | AI が GitHub のリポジトリ設定・プロフィール設定を直接操作できるスキル —— **リポジトリをプロフィールにピン留め**（公式 API には存在しない機能）にも対応。 |
+一个让 AI 直接完成 GitHub 仓库与个人资料设置的 skill —— 包括把仓库 **pin 到个人主页**（官方 API 至今没有这个能力）。
 
 ---
 
-## Why this exists / 为什么做这个 / なぜ作ったのか
-
-We verified against the current public GraphQL schema (2026-02): `pinItem` / `unpinItem` **no longer exist**, the REST API has no pin endpoint, and `gh` has no pin command ([cli/cli#8871](https://github.com/cli/cli/issues/8871), still open). Community extensions are read-only too.
-
-**The only write path is the web UI's "Customize your pins" dialog.** This skill encodes that reality instead of inventing a mutation that fails — pins are read via GraphQL and written by automating the web UI; everything else goes through `gh` CLI and REST.
+## 为什么做这个
 
 - 针对当前公开 GraphQL schema（2026-02）实测：`pinItem` / `unpinItem` **已不存在**，REST API 无 pin 端点，`gh` 无 pin 命令（[cli/cli#8871](https://github.com/cli/cli/issues/8871) 仍开放），社区扩展也只能读不能写。
 - **唯一的写入途径是网页端 "Customize your pins" 弹窗。** 本 skill 不凭空捏造不存在的 mutation，而是如实编码这个现实：pins 读取走 GraphQL、写入走网页自动化，其余设置走 `gh` CLI 与 REST。
-- 現在の公開 GraphQL スキーマ（2026-02）で検証：`pinItem` / `unpinItem` は**既に存在しない**、REST API に pin エンドポイントはなく、`gh` にも pin コマンドがない（[cli/cli#8871](https://github.com/cli/cli/issues/8871) は未解決）。コミュニティ拡張も読み取り専用。
-- **唯一の書き込み経路は Web UI の "Customize your pins" ダイアログ。** 本スキルは存在しないミューテーションを捏造せず、この現実をそのままコード化：pin の読み取りは GraphQL、書き込みは Web UI 自動化、その他の設定は `gh` CLI と REST で対応。
 
 ---
 
-## What it covers / 覆盖能力 / 対応範囲
+## 覆盖能力
 
-- **Pinned repositories** — read via GraphQL (`pinnedItems` / `pinnableItems` / `pinnedItemsRemaining`, max 6, users & orgs); write via the web-UI automation flow, with manual fallback. Pins can be repos, gists, issues, PRs, or projects.
-- **Repository settings** — `gh repo edit` quick reference: description, homepage, topics, visibility, default branch, merge strategy, issues/wiki/discussions/projects, template, secret scanning.
-- **Branch protection & rulesets** — REST endpoints with payload guidance.
-- **Other settings** — Actions permissions, environments, webhooks, deploy keys, collaborators, profile (name/bio/blog), social accounts.
 - **Pins 读取**走 GraphQL（`pinnedItems` / `pinnableItems` / `pinnedItemsRemaining`，上限 6 个，用户与组织均支持）；**写入**走网页自动化流程，附手动降级指引。可 pin 的不只是仓库，还有 gist、issue、PR、project。
 - **仓库设置** —— `gh repo edit` 速查：描述、主页、topics、可见性、默认分支、合并策略、issues/wiki/discussions/projects、模板、密钥扫描。
 - **分支保护与 rulesets** —— REST 端点与 payload 编写指引。
@@ -34,7 +22,7 @@ We verified against the current public GraphQL schema (2026-02): `pinItem` / `un
 
 ---
 
-## Install / 安装 / インストール
+## 安装
 
 One line (macOS & Linux):
 
@@ -51,30 +39,25 @@ cp -r github-settings ~/.zcode/skills/
 cp -r github-settings ~/.agents/skills/
 ```
 
-Releases / 发行版: packaged skill archives are attached to each [GitHub release](https://github.com/Keng0nion/github-settings/releases) — download the zip and drop it into `~/.zcode/skills/`.
-
-Requires the GitHub CLI (`gh`) with `repo` scope (`gh auth login`). The pin write flow additionally needs a browser-automation skill (e.g. [agent-browser](https://github.com/vercel-labs/agent-browser)) with a GitHub-signed-in browser session.
+发行版: packaged skill archives are attached to each [GitHub release](https://github.com/Keng0nion/github-settings/releases) — download the zip and drop it into `~/.zcode/skills/`.
 
 - 需要 `gh` CLI 并已登录（`repo` scope）。pin 写入流程另外需要浏览器自动化技能（如 agent-browser）和已登录 GitHub 的浏览器会话。
-- `gh` CLI（`repo` スコープ）とログインが必要。pin の書き込みにはさらにブラウザ自動化（agent-browser など）とログイン済みブラウザセッションが必要。
 
 ---
 
-## Usage / 用法 / 使い方
+## 用法
 
 Once installed, just ask your agent naturally:
 
-- “把 xxx 仓库 pin 到我的主页” / "Pin xxx to my GitHub profile" / 「xxx をプロフィールにピン留めして」
-- “给仓库加 topic 并改描述” / "Add topics and update the description" / 「トピックを追加して説明を更新して」
-- “开启 secret scanning” / "Enable secret scanning" / 「secret scanning を有効にして」
+- “把 xxx 仓库 pin 到我的主页”
+- “给仓库加 topic 并改描述”
+- “开启 secret scanning”
 
 The agent will follow `SKILL.md`: read pins via GraphQL, change pins through the web UI, and manage everything else with `gh` CLI — always verifying changes with a read-back.
 
 ---
 
-## Maintainer notes / 维护者笔记 / メンテナンス
-
-After editing `SKILL.md` / `README.md`, sync them back with the GitHub Contents API (keeps the commit history clean, no local git needed):
+## 维护者笔记
 
 ```bash
 gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
@@ -82,8 +65,6 @@ gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
   -f content="$(base64 < SKILL.md | tr -d '\n')" \
   -f sha="$(gh api repos/Keng0nion/github-settings/contents/SKILL.md --jq '.sha')"
 ```
-
-Cut a release: `gh release create vX.Y.Z --repo Keng0nion/github-settings --title vX.Y.Z --generate-notes`, then attach the packaged zip with `gh release upload`.
 
 - 编辑 `SKILL.md` / `README.md` 后用 GitHub Contents API 同步回仓库（保持提交历史干净，无需本地 git）。发版：`gh release create` 打 tag + notes，再 `gh release upload` 附打包的 zip。
 
