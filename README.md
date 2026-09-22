@@ -1,4 +1,8 @@
-🌐 中文 · [English](README.en.md) · [日本語](README.ja.md)
+**目录：**
+
+- [中文版](README.md)
+- [英文版](README.en.md)
+- [日文版](README.ja.md)
 
 # github-settings
 
@@ -24,13 +28,13 @@
 
 ## 安装
 
-One line (macOS & Linux):
+一行安装（macOS 和 Linux）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Keng0nion/github-settings/main/install.sh | bash
 ```
 
-Or manually:
+或手动安装：
 
 ```bash
 git clone https://github.com/Keng0nion/github-settings.git
@@ -39,7 +43,7 @@ cp -r github-settings ~/.zcode/skills/
 cp -r github-settings ~/.agents/skills/
 ```
 
-发行版: packaged skill archives are attached to each [GitHub release](https://github.com/Keng0nion/github-settings/releases) — download the zip and drop it into `~/.zcode/skills/`.
+发行版：每个 [GitHub release](https://github.com/Keng0nion/github-settings/releases) 都附有打包好的 skill 压缩包 —— 下载 zip 放入 `~/.zcode/skills/` 即可。
 
 - 需要 `gh` CLI 并已登录（`repo` scope）。pin 写入流程另外需要浏览器自动化技能（如 agent-browser）和已登录 GitHub 的浏览器会话。
 
@@ -47,13 +51,13 @@ cp -r github-settings ~/.agents/skills/
 
 ## 用法
 
-Once installed, just ask your agent naturally:
+安装完成后，直接用自然语言向你的 agent 提出请求即可：
 
 - “把 xxx 仓库 pin 到我的主页”
 - “给仓库加 topic 并改描述”
 - “开启 secret scanning”
 
-The agent will follow `SKILL.md`: read pins via GraphQL, change pins through the web UI, and manage everything else with `gh` CLI — always verifying changes with a read-back.
+agent 会遵循 `SKILL.md`：pins 读取走 GraphQL、变更走网页端，其余设置全部用 `gh` CLI 管理 —— 并始终通过读回验证变更。
 
 ---
 
@@ -70,6 +74,6 @@ gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
 
 ---
 
-## License
+## 许可证
 
 [MIT](LICENSE)
