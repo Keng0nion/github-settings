@@ -1,4 +1,8 @@
-🌐 [中文](README.md) · English · [日本語](README.ja.md)
+**Contents:**
+
+- [Chinese](README.md)
+- [English](README.en.md)
+- [Japanese](README.ja.md)
 
 # github-settings
 
