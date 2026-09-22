@@ -1,4 +1,8 @@
-🌐 [中文](README.md) · [English](README.en.md) · 日本語
+**目次：**
+
+- [中国語](README.md)
+- [英語](README.en.md)
+- [日本語](README.ja.md)
 
 # github-settings
 
@@ -15,22 +19,22 @@ AI が GitHub のリポジトリ設定・プロフィール設定を直接操作
 
 ## 対応範囲
 
-- **Pinned repositories** — read via GraphQL (`pinnedItems` / `pinnableItems` / `pinnedItemsRemaining`, max 6, users & orgs); write via the web-UI automation flow, with manual fallback. Pins can be repos, gists, issues, PRs, or projects.
-- **Repository settings** — `gh repo edit` quick reference: description, homepage, topics, visibility, default branch, merge strategy, issues/wiki/discussions/projects, template, secret scanning.
-- **Branch protection & rulesets** — REST endpoints with payload guidance.
-- **Other settings** — Actions permissions, environments, webhooks, deploy keys, collaborators, profile (name/bio/blog), social accounts.
+- **ピン留めされたリポジトリ** — 読み取りは GraphQL（`pinnedItems` / `pinnableItems` / `pinnedItemsRemaining`、上限 6 件、ユーザーと組織の両方に対応）、書き込みは Web UI 自動化フロー（手動でのフォールバック付き）。ピン留めできるのはリポジトリ、gist、issue、PR、project。
+- **リポジトリ設定** — `gh repo edit` クイックリファレンス：説明、ホームページ、topics、可視性、デフォルトブランチ、マージ戦略、issues/wiki/discussions/projects、テンプレート、シークレットスキャン。
+- **ブランチ保護と rulesets** — REST エンドポイントとペイロードの記述ガイド。
+- **その他の設定** — Actions 権限、environments、webhooks、deploy keys、コラボレーター、プロフィール（名前/バイオ/ブログ）、ソーシャルアカウント。
 
 ---
 
 ## インストール
 
-One line (macOS & Linux):
+1 行でインストール（macOS と Linux）：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Keng0nion/github-settings/main/install.sh | bash
 ```
 
-Or manually:
+または手動で：
 
 ```bash
 git clone https://github.com/Keng0nion/github-settings.git
@@ -39,7 +43,7 @@ cp -r github-settings ~/.zcode/skills/
 cp -r github-settings ~/.agents/skills/
 ```
 
-Releases: packaged skill archives are attached to each [GitHub release](https://github.com/Keng0nion/github-settings/releases) — download the zip and drop it into `~/.zcode/skills/`.
+リリース：各 [GitHub release](https://github.com/Keng0nion/github-settings/releases) にはパッケージ済みのスキルアーカイブが添付されています —— zip をダウンロードして `~/.zcode/skills/` に置いてください。
 
 - `gh` CLI（`repo` スコープ）とログインが必要。pin の書き込みにはさらにブラウザ自動化（agent-browser など）とログイン済みブラウザセッションが必要。
 
@@ -47,19 +51,19 @@ Releases: packaged skill archives are attached to each [GitHub release](https://
 
 ## 使い方
 
-Once installed, just ask your agent naturally:
+インストール後は、自然な言葉で agent にお願いするだけです：
 
 - 「xxx をプロフィールにピン留めして」
 - 「トピックを追加して説明を更新して」
 - 「secret scanning を有効にして」
 
-The agent will follow `SKILL.md`: read pins via GraphQL, change pins through the web UI, and manage everything else with `gh` CLI — always verifying changes with a read-back.
+agent は `SKILL.md` に従って動きます：pin の読み取りは GraphQL、pin の変更は Web UI 経由、その他はすべて `gh` CLI で管理 —— 常に読み戻して変更を検証します。
 
 ---
 
 ## メンテナンス
 
-After editing `SKILL.md` / `README.md`, sync them back with the GitHub Contents API (keeps the commit history clean, no local git needed):
+`SKILL.md` / `README.md` を編集したら、GitHub Contents API でリポジトリに同期し戻します（コミット履歴がきれいなまま、ローカル git 不要）：
 
 ```bash
 gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
@@ -68,10 +72,10 @@ gh api -X PUT repos/Keng0nion/github-settings/contents/SKILL.md \
   -f sha="$(gh api repos/Keng0nion/github-settings/contents/SKILL.md --jq '.sha')"
 ```
 
-Cut a release: `gh release create vX.Y.Z --repo Keng0nion/github-settings --title vX.Y.Z --generate-notes`, then attach the packaged zip with `gh release upload`.
+リリースを切る：`gh release create vX.Y.Z --repo Keng0nion/github-settings --title vX.Y.Z --generate-notes` を実行し、その後 `gh release upload` でパッケージ済みの zip を添付します。
 
 ---
 
-## License
+## ライセンス
 
 [MIT](LICENSE)
